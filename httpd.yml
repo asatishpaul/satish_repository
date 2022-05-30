@@ -1,0 +1,17 @@
+---
+- hosts: servers
+  remote_user: all
+  become: yes
+  vars:
+        project_root: /var/www/html/
+  tasks:
+      - name: installation of httpd package
+        yum: pkg=httpd  state=latest
+      - name: copy index.html file 
+        copy: src=index.html  dest={{ project_root }}/index.html
+      - name: enable apache on reboot system
+        service: name=httpd enabled=yes 
+        notify: restart apache
+  handlers:
+      - name: restart apache
+        service: name=httpd state=restarted
